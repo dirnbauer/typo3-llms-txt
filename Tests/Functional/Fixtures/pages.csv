@@ -1,0 +1,9 @@
+"pages",,,,,,,,,,,,
+,"uid","pid","sorting","title","seo_title","description","slug","doktype","no_index","nav_hide","hidden","deleted"
+,1,0,256,"Vienna Camp root","","A camp about deliberate publishing.","/",1,0,0,0,0
+,2,1,256,"Program","","Talks and workshops.","/program",1,0,0,0,0
+,3,1,512,"Tickets","Buy tickets","","/tickets",1,0,0,0,0
+,4,1,768,"Internal notes","","","/internal",1,1,0,0,0
+,5,1,1024,"Footer legal","","","/legal",1,0,1,0,0
+,6,1,1280,"Draft page","","","/draft",1,0,0,1,0
+,7,2,256,"Keynotes","","The opening talks.","/program/keynotes",1,0,0,0,0
