@@ -17,8 +17,7 @@ final readonly class SiteProfile
         public string $baseUrl,
         /** Scheme + host of the installation, e.g. "https://example.org" */
         public string $origin,
-    ) {
-    }
+    ) {}
 
     public function urlFor(string $slug): string
     {

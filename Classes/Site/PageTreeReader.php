@@ -28,8 +28,7 @@ class PageTreeReader
 
     public function __construct(
         private readonly ConnectionPool $connectionPool,
-    ) {
-    }
+    ) {}
 
     /**
      * @return list<Section>

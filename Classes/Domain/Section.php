@@ -12,6 +12,5 @@ final readonly class Section
     public function __construct(
         public string $title,
         public array $links,
-    ) {
-    }
+    ) {}
 }

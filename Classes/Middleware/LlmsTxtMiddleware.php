@@ -33,8 +33,7 @@ final class LlmsTxtMiddleware implements MiddlewareInterface
         private readonly AgentsMdBuilder $agentsMdBuilder,
         private readonly ResponseFactoryInterface $responseFactory,
         private readonly StreamFactoryInterface $streamFactory,
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

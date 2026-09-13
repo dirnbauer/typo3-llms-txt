@@ -10,6 +10,5 @@ final readonly class PageLink
         public string $title,
         public string $url,
         public string $description = '',
-    ) {
-    }
+    ) {}
 }

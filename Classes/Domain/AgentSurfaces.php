@@ -19,6 +19,5 @@ final readonly class AgentSurfaces
         public array $abilities = [],
         public ?string $sitemapUrl = null,
         public bool $paidContent = false,
-    ) {
-    }
+    ) {}
 }
