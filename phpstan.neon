@@ -1,6 +1,13 @@
+includes:
+    - vendor/saschaegerer/phpstan-typo3/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
 parameters:
-    level: max
+    level: 8
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: true
     paths:
         - Classes
+        - Configuration
         - Tests
-    treatPhpDocTypesAsCertain: false
