@@ -10,3 +10,4 @@ Build/Reports
 *.map
 .php-cs-fixer.cache
 .phpunit.cache
+Documentation-GENERATED-temp

@@ -1,0 +1,14 @@
+..  Global includes and substitutions for every page of this manual.
+
+..  |extension_key| replace:: llms_txt
+..  |composer_name| replace:: webconsulting/typo3-llms-txt
+..  |extension_name| replace:: TYPO3 llms.txt / agents.md
+
+..  role:: php(code)
+    :language: php
+
+..  role:: bash(code)
+    :language: bash
+
+..  role:: yaml(code)
+    :language: yaml

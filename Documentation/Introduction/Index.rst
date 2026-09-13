@@ -1,0 +1,82 @@
+..  include:: /Includes.rst.txt
+
+..  _introduction:
+
+============
+Introduction
+============
+
+AI Overviews answer questions without sending a click, browser agents
+operate sites on behalf of a person, and crawlers are increasingly
+metered. A site can react by hiding, or by stating — machine-readably —
+what it offers and how it wants to be worked with. This extension does
+the second, with two files per site.
+
+..  _introduction-llms-txt:
+
+llms.txt
+========
+
+Served at :file:`<site base>/llms.txt`, following the
+`llms.txt convention <https://llmstxt.org>`__: an H1 with the site title,
+a blockquote summary, and one H2 section per visible first-level page,
+each holding a list of ``[title](url): description`` links.
+
+The page tree is the single source. A page is listed only when it is a
+standard page (doktype 1), visible, not timed out, not marked
+``no_index`` and not hidden in navigation — so the file publishes what the
+site deliberately offers, and nothing else.
+
+..  _introduction-agents-md:
+
+agents.md
+=========
+
+Served at :file:`<site base>/agents.md`. Where llms.txt is about finding
+content, agents.md is about operating the installation. It lists the
+machine interfaces that actually exist, detected at runtime:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Surface
+        -   Detected when
+        -   Advertised as
+
+    *   -   MCP server
+        -   :composer:`hn/typo3-mcp-server` is installed
+        -   The endpoint, together with the naming scheme of the ability
+            tools, :php:`ability_<namespace>_<name>`.
+
+    *   -   Abilities registry
+        -   `webconsulting/typo3-abilities <https://github.com/dirnbauer/typo3-abilities>`__ is installed
+        -   All three projections: the REST base (:file:`/abilities/v1` by
+            default, read from the extension configuration), the CLI
+            commands :bash:`abilities:list`, :bash:`abilities:describe`
+            and :bash:`abilities:run`, and every MCP-exposed ability with
+            its title, risk tier and description.
+
+    *   -   Sitemap
+        -   EXT:seo is installed
+        -   The sitemap URL of the site.
+
+    *   -   Paid content
+        -   The x402 paywall is installed
+        -   The ``402 Payment Required`` lane, so an agent can pay per
+            request instead of scraping around the gate.
+
+Ground rules close the file: respect :file:`robots.txt`, ``noindex`` and
+rate limits, identify yourself, do not submit forms or create accounts
+unattended, and route writes through the authenticated interfaces rather
+than the public frontend.
+
+..  _introduction-delivery:
+
+How they are served
+===================
+
+A single PSR-15 frontend middleware answers both paths. It runs after
+site resolution and before page resolution, because no page records exist
+for the two virtual paths, and responds with ``text/plain``, a one-hour
+cache header and ``X-Robots-Tag: noindex``. Nothing is written to disk, so
+an edited page tree is visible on the next request.
