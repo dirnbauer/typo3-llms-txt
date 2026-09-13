@@ -38,6 +38,7 @@ final class AgentsMdBuilderTest extends TestCase
                 'description' => 'Lists the configured sites.',
                 'risk' => 'low',
             ]],
+            abilitiesRestBase: 'https://example.org/abilities/v1',
             sitemapUrl: 'https://example.org/camp/sitemap.xml',
             paidContent: true,
         ));
@@ -45,10 +46,28 @@ final class AgentsMdBuilderTest extends TestCase
         self::assertStringContainsString('# Vienna Camp — agent guide', $output);
         self::assertStringContainsString('[llms.txt](https://example.org/camp/llms.txt)', $output);
         self::assertStringContainsString('**MCP server**: `https://example.org/mcp`', $output);
+        self::assertStringContainsString('`ability_<namespace>_<name>` tools', $output);
+        self::assertStringContainsString('`GET https://example.org/abilities/v1/abilities` lists them', $output);
+        self::assertStringContainsString('`POST https://example.org/abilities/v1/abilities/{namespace}/{name}/run` executes one', $output);
+        self::assertStringContainsString('`abilities:list`, `abilities:describe <ability>`, `abilities:run <ability>`', $output);
         self::assertStringContainsString('`ability_system_site-info` — Site info (low risk): Lists the configured sites.', $output);
         self::assertStringContainsString('**Sitemap**: https://example.org/camp/sitemap.xml', $output);
         self::assertStringContainsString('x402 payment protocol', $output);
         self::assertStringContainsString('## Ground rules', $output);
+    }
+
+    #[Test]
+    public function advertisesTheAbilityProjectionsWithoutAnMcpServer(): void
+    {
+        $output = $this->builder->build($this->profile, new AgentSurfaces(
+            abilitiesRestBase: 'https://example.org/abilities/v1',
+        ));
+
+        self::assertStringNotContainsString('MCP server', $output);
+        self::assertStringContainsString('**Abilities registry**', $output);
+        self::assertStringContainsString('https://example.org/abilities/v1/abilities', $output);
+        self::assertStringContainsString('`abilities:list`', $output);
+        self::assertStringNotContainsString('Registered abilities', $output);
     }
 
     #[Test]

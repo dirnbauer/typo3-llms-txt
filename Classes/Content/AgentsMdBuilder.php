@@ -34,21 +34,34 @@ final class AgentsMdBuilder
 
         if ($surfaces->mcpEndpoint !== null) {
             $lines[] = sprintf(
-                '- **MCP server**: `%s` (Model Context Protocol, OAuth-protected). Tools are permissioned per capability manifest; write operations are staged in workspaces and need review before publication.',
+                '- **MCP server**: `%s` (Model Context Protocol, OAuth-protected). Tools are permissioned per capability manifest; write operations are staged in workspaces and need review before publication. Registered abilities appear here as `ability_<namespace>_<name>` tools.',
                 $surfaces->mcpEndpoint,
             );
         }
 
-        if ($surfaces->abilities !== []) {
-            $lines[] = '- **Abilities registry**: typed, permissioned capabilities exposed as MCP tools (`ability_*`):';
-            foreach ($surfaces->abilities as $ability) {
+        if ($surfaces->abilities !== [] || $surfaces->abilitiesRestBase !== null) {
+            $lines[] = '- **Abilities registry**: typed, permissioned capabilities in one registry, projected onto every surface. Each call runs through the same pipeline — policy gate, input schema validation, scope check, permission check, execution, output schema validation — and is recorded as an execution trace.';
+
+            if ($surfaces->abilitiesRestBase !== null) {
                 $lines[] = sprintf(
-                    '  - `%s` — %s (%s risk): %s',
-                    $ability['name'],
-                    $ability['title'],
-                    $ability['risk'],
-                    $ability['description'],
+                    '  - REST: `GET %1$s/abilities` lists them, `GET %1$s/abilities/{namespace}/{name}` returns the JSON Schemas, `POST %1$s/abilities/{namespace}/{name}/run` executes one. Send a bearer token; `GET %1$s/categories` groups them.',
+                    $surfaces->abilitiesRestBase,
                 );
+            }
+
+            $lines[] = '  - CLI: `abilities:list`, `abilities:describe <ability>`, `abilities:run <ability>`.';
+
+            if ($surfaces->abilities !== []) {
+                $lines[] = '  - Registered abilities (MCP tool name — title, risk tier, description):';
+                foreach ($surfaces->abilities as $ability) {
+                    $lines[] = sprintf(
+                        '    - `%s` — %s (%s risk): %s',
+                        $ability['name'],
+                        $ability['title'],
+                        $ability['risk'],
+                        $ability['description'],
+                    );
+                }
             }
         }
 

@@ -13,10 +13,12 @@ final readonly class AgentSurfaces
 {
     /**
      * @param list<array{name: string, title: string, description: string, risk: string}> $abilities
+     * @param ?string $abilitiesRestBase Absolute URL of the abilities REST projection, e.g. "https://example.org/abilities/v1"
      */
     public function __construct(
         public ?string $mcpEndpoint = null,
         public array $abilities = [],
+        public ?string $abilitiesRestBase = null,
         public ?string $sitemapUrl = null,
         public bool $paidContent = false,
     ) {}
