@@ -6,22 +6,46 @@ namespace Webconsulting\LlmsTxt\Site;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Webconsulting\Abilities\Catalog\CapabilityCatalog;
+use Webconsulting\Abilities\Http\RestConfiguration;
+use Webconsulting\Abilities\Registry\AbilitiesRegistry;
+use Webconsulting\LlmsTxt\Domain\AdvertisedAbility;
 use Webconsulting\LlmsTxt\Domain\AgentSurfaces;
 use Webconsulting\LlmsTxt\Domain\SiteProfile;
 
 /**
- * Detects which machine-operable surfaces this installation actually has.
- * Every integration is optional — agents.md only advertises what exists.
+ * Detects which machine-operable surfaces this installation actually has —
+ * agents.md only advertises what exists.
+ *
+ * Every integration is optional. The two abilities services below are
+ * constructor arguments with a null default: when
+ * webconsulting/typo3-abilities is not installed no service matches them,
+ * the container passes the default, and the abilities block disappears
+ * from agents.md. A registry therefore means "abilities is installed", a
+ * capability catalogue means "abilities 1.1 or newer".
  */
-class AgentSurfacesFactory
+final readonly class AgentSurfacesFactory
 {
+    public function __construct(
+        private ExtensionConfiguration $extensionConfiguration,
+        private ?AbilitiesRegistry $registry = null,
+        private ?CapabilityCatalog $catalog = null,
+    ) {}
+
     public function forSite(SiteProfile $profile): AgentSurfaces
     {
+        // The MCP server and the abilities REST projection are mounted
+        // before site resolution, at the installation root — not below the
+        // site base.
+        $origin = $profile->origin;
+
         return new AgentSurfaces(
-            mcpEndpoint: $this->mcpEndpoint($profile),
+            mcpEndpoint: $origin !== '' && ExtensionManagementUtility::isLoaded('mcp_server')
+                ? $origin . '/mcp'
+                : null,
             abilities: $this->abilities(),
-            abilitiesRestBase: $this->abilitiesRestBase($profile),
+            abilitiesRestBase: $this->abilitiesRestBase($origin),
+            abilitiesCatalog: $this->catalog !== null,
             sitemapUrl: ExtensionManagementUtility::isLoaded('seo')
                 ? $profile->urlFor('sitemap.xml')
                 : null,
@@ -29,55 +53,34 @@ class AgentSurfacesFactory
         );
     }
 
-    private function mcpEndpoint(SiteProfile $profile): ?string
-    {
-        if (!ExtensionManagementUtility::isLoaded('mcp_server') || $profile->origin === '') {
-            return null;
-        }
-
-        // The MCP server listens at the installation root, not the site base.
-        return $profile->origin . '/mcp';
-    }
-
     /**
-     * The REST projection of the abilities registry is mounted before site
-     * resolution, at the installation root — not below the site base.
+     * Abilities 1.0 keeps RestConfiguration out of the container, so its
+     * settings are read through its own factory rather than injected.
      */
-    private function abilitiesRestBase(SiteProfile $profile): ?string
+    private function abilitiesRestBase(string $origin): ?string
     {
-        if ($profile->origin === '' || !class_exists(\Webconsulting\Abilities\Http\RestConfiguration::class)) {
+        if ($this->registry === null || $origin === '') {
             return null;
         }
 
-        $configuration = \Webconsulting\Abilities\Http\RestConfiguration::fromExtensionConfiguration(
-            GeneralUtility::makeInstance(ExtensionConfiguration::class),
-        );
+        $rest = RestConfiguration::fromExtensionConfiguration($this->extensionConfiguration);
 
-        return $configuration->enabled ? $profile->origin . $configuration->basePath : null;
+        return $rest->enabled ? $origin . $rest->basePath : null;
     }
 
     /**
-     * @return list<array{name: string, title: string, description: string, risk: string}>
+     * @return list<AdvertisedAbility>
      */
     private function abilities(): array
     {
-        if (!class_exists(\Webconsulting\Abilities\Registry\AbilitiesRegistry::class)) {
-            return [];
-        }
-
-        $registry = GeneralUtility::makeInstance(\Webconsulting\Abilities\Registry\AbilitiesRegistry::class);
-
         $abilities = [];
-        foreach ($registry->getDefinitions() as $definition) {
-            if (!$definition->isExposedTo('mcp')) {
-                continue;
-            }
-            $abilities[] = [
-                'name' => $definition->mcpToolName(),
-                'title' => $definition->title,
-                'description' => $definition->description,
-                'risk' => $definition->riskTier->value,
-            ];
+        foreach ($this->registry?->getDefinitions(surface: 'mcp') ?? [] as $definition) {
+            $abilities[] = new AdvertisedAbility(
+                toolName: $definition->mcpToolName(),
+                title: $definition->title,
+                description: $definition->description,
+                riskTier: $definition->riskTier->value,
+            );
         }
 
         return $abilities;

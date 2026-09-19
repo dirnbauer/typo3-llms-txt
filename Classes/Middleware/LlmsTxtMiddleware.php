@@ -11,72 +11,48 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use Webconsulting\LlmsTxt\Content\AgentsMdBuilder;
-use Webconsulting\LlmsTxt\Content\LlmsTxtBuilder;
-use Webconsulting\LlmsTxt\Site\AgentSurfacesFactory;
-use Webconsulting\LlmsTxt\Site\PageTreeReader;
-use Webconsulting\LlmsTxt\Site\SiteProfileFactory;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use Webconsulting\LlmsTxt\Content\AgentFileRenderer;
+use Webconsulting\LlmsTxt\Domain\AgentFile;
 
 /**
- * Serves <site base>/llms.txt and <site base>/agents.md, generated from
- * the page tree and site configuration. Runs after site resolution and
- * before page resolution — the two paths are virtual, no page records
- * exist for them. Disable per site with the setting llmsTxt.enabled: false.
+ * Serves <language base>/llms.txt and <language base>/agents.md for every
+ * site language. Runs after site resolution and before page resolution —
+ * the two paths are virtual, no page records exist for them. Disable per
+ * site with the setting llmsTxt.enabled: false.
  */
-final class LlmsTxtMiddleware implements MiddlewareInterface
+final readonly class LlmsTxtMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly SiteProfileFactory $profileFactory,
-        private readonly PageTreeReader $pageTreeReader,
-        private readonly AgentSurfacesFactory $surfacesFactory,
-        private readonly LlmsTxtBuilder $llmsTxtBuilder,
-        private readonly AgentsMdBuilder $agentsMdBuilder,
-        private readonly ResponseFactoryInterface $responseFactory,
-        private readonly StreamFactoryInterface $streamFactory,
+        private AgentFileRenderer $renderer,
+        private ResponseFactoryInterface $responseFactory,
+        private StreamFactoryInterface $streamFactory,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $site = $request->getAttribute('site');
-        if (!$site instanceof Site) {
+        $language = $request->getAttribute('language');
+        if (!$site instanceof Site || !$language instanceof SiteLanguage) {
             return $handler->handle($request);
         }
 
-        $file = self::matchedFile($site->getBase()->getPath(), $request->getUri()->getPath());
-        if ($file === null) {
+        $file = AgentFile::fromRequestPath($language->getBase()->getPath(), $request->getUri()->getPath());
+        if ($file === null || !self::isEnabled($site)) {
             return $handler->handle($request);
         }
-
-        if ($site->getSettings()->get('llmsTxt.enabled', true) === false) {
-            return $handler->handle($request);
-        }
-
-        $profile = $this->profileFactory->fromSite($site);
-
-        $content = $file === 'llms.txt'
-            ? $this->llmsTxtBuilder->build($profile, $this->pageTreeReader->readSections($site, $profile))
-            : $this->agentsMdBuilder->build($profile, $this->surfacesFactory->forSite($profile));
 
         return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/plain; charset=utf-8')
             ->withHeader('Cache-Control', 'public, max-age=3600')
             ->withHeader('X-Robots-Tag', 'noindex')
-            ->withBody($this->streamFactory->createStream($content));
+            ->withBody($this->streamFactory->createStream($this->renderer->render($site, $language, $file)));
     }
 
-    /**
-     * @return 'llms.txt'|'agents.md'|null
-     */
-    public static function matchedFile(string $siteBasePath, string $requestPath): ?string
+    private static function isEnabled(Site $site): bool
     {
-        $prefix = rtrim($siteBasePath, '/');
+        $setting = $site->getSettings()->get('llmsTxt.enabled', true);
 
-        foreach (['llms.txt', 'agents.md'] as $file) {
-            if ($requestPath === $prefix . '/' . $file) {
-                return $file;
-            }
-        }
-
-        return null;
+        return filter_var($setting, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? true;
     }
 }

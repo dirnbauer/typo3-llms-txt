@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace Webconsulting\LlmsTxt\Content;
 
+use Webconsulting\LlmsTxt\Domain\Section;
 use Webconsulting\LlmsTxt\Domain\SiteProfile;
 
 /**
- * Renders the llms.txt markdown for one site following the llms.txt
- * convention: H1 title, blockquote summary, H2 sections with link lists
- * ("[title](url): description").
+ * Renders llms.txt following the convention at llmstxt.org: an H1 with the
+ * site title, a blockquote summary and H2 sections holding
+ * "- [title](url): description" link lists.
  */
 final class LlmsTxtBuilder
 {
     /**
-     * @param list<\Webconsulting\LlmsTxt\Domain\Section> $sections
+     * @param list<Section> $sections
      */
     public function build(SiteProfile $profile, array $sections): string
     {
-        $lines = ['# ' . $this->inline($profile->title)];
+        $lines = ['# ' . Markdown::inline($profile->title)];
 
         if ($profile->description !== '') {
             $lines[] = '';
-            $lines[] = '> ' . $this->inline($profile->description);
+            $lines[] = '> ' . Markdown::inline($profile->description);
         }
 
         foreach ($sections as $section) {
@@ -30,28 +31,17 @@ final class LlmsTxtBuilder
                 continue;
             }
             $lines[] = '';
-            $lines[] = '## ' . $this->inline($section->title);
+            $lines[] = '## ' . Markdown::inline($section->title);
             $lines[] = '';
             foreach ($section->links as $link) {
-                $entry = sprintf('- [%s](%s)', $this->inline($link->title), $link->url);
+                $entry = sprintf('- [%s](%s)', Markdown::inline($link->title), $link->url);
                 if ($link->description !== '') {
-                    $entry .= ': ' . $this->inline($link->description);
+                    $entry .= ': ' . Markdown::inline($link->description);
                 }
                 $lines[] = $entry;
             }
         }
 
         return implode("\n", $lines) . "\n";
-    }
-
-    /**
-     * Page titles and descriptions come from editors; keep them on one
-     * line and escape the brackets that carry markdown link syntax.
-     */
-    private function inline(string $text): string
-    {
-        $text = (string)preg_replace('/\s+/u', ' ', trim($text));
-
-        return str_replace(['[', ']'], ['\\[', '\\]'], $text);
     }
 }

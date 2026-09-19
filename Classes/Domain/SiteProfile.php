@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Webconsulting\LlmsTxt\Domain;
 
 /**
- * Everything the markdown builders need to know about a site,
- * decoupled from TYPO3's Site object for testability.
+ * Everything the markdown builders need to know about one site language,
+ * decoupled from TYPO3's Site objects for testability.
  */
 final readonly class SiteProfile
 {
     public function __construct(
         public string $title,
         public string $description,
-        /** Site base URL without trailing slash, e.g. "https://example.org/blog" */
+        /** Base URL of the site language without trailing slash, e.g. "https://example.org/blog/de" */
         public string $baseUrl,
         /** Scheme + host of the installation, e.g. "https://example.org" */
         public string $origin,

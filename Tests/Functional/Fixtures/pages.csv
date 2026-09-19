@@ -7,3 +7,4 @@
 ,5,1,1024,"Footer legal","","","/legal",1,0,1,0,0
 ,6,1,1280,"Draft page","","","/draft",1,0,0,1,0
 ,7,2,256,"Keynotes","","The opening talks.","/program/keynotes",1,0,0,0,0
+,8,2,512,"Sponsors","","Who pays for it.","/program/sponsors",137,0,0,0,0
