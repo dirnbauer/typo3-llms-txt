@@ -74,14 +74,16 @@ Never advertise what is not installed. Two mechanisms carry that rule:
     public function __construct(
         private ExtensionConfiguration $extensionConfiguration,
         private ?AbilitiesRegistry $registry = null,
-        private ?CapabilityCatalog $catalog = null,
+        private ?AbilityCatalog $catalog = null,
     ) {}
 
-A registry therefore means "abilities is installed", and a capability
-catalogue means "abilities 1.1 or newer". The REST base is read from the
-abilities extension configuration rather than hard-coded, so a site that
-moved the projection away from :file:`/abilities/v1` still advertises the
-correct URL.
+A registry therefore means "abilities is installed", and an ability
+catalogue means "abilities 1.2 or newer" — 1.1 shipped the same catalogue
+under its old class name :php:`CapabilityCatalog` and is not detected.
+
+The REST base is read from the abilities extension configuration rather than
+hard-coded, so a site that moved the projection away from
+:file:`/abilities/v1` still advertises the correct URL.
 
 :php:`AgentSurfacesFactory` is :php:`final readonly`; an installation that
 exposes an interface this extension does not know about replaces the

@@ -56,7 +56,7 @@ None of these are required; each one only adds a line to agents.md when
 it is installed:
 
 *   :composer:`hn/typo3-mcp-server` — the MCP endpoint
-*   `webconsulting/typo3-abilities <https://github.com/dirnbauer/typo3-abilities>`__ 1.0 or 1.1 — the abilities
-    registry and its REST, CLI and MCP projections; 1.1 adds the
-    capability catalogue
+*   `webconsulting/typo3-abilities <https://github.com/dirnbauer/typo3-abilities>`__ 1.0 to 1.2 — the abilities
+    registry and its REST, CLI and MCP projections; 1.2 adds the
+    ability catalogue
 *   the x402 paywall — the paid-content lane

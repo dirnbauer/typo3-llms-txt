@@ -6,7 +6,7 @@ namespace Webconsulting\LlmsTxt\Site;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use Webconsulting\Abilities\Catalog\CapabilityCatalog;
+use Webconsulting\Abilities\Catalog\AbilityCatalog;
 use Webconsulting\Abilities\Http\RestConfiguration;
 use Webconsulting\Abilities\Registry\AbilitiesRegistry;
 use Webconsulting\LlmsTxt\Domain\AdvertisedAbility;
@@ -21,15 +21,16 @@ use Webconsulting\LlmsTxt\Domain\SiteProfile;
  * constructor arguments with a null default: when
  * webconsulting/typo3-abilities is not installed no service matches them,
  * the container passes the default, and the abilities block disappears
- * from agents.md. A registry therefore means "abilities is installed", a
- * capability catalogue means "abilities 1.1 or newer".
+ * from agents.md. A registry therefore means "abilities is installed", an
+ * ability catalogue means "abilities 1.2 or newer" (1.1 shipped the same
+ * catalogue under its old class name and is not detected).
  */
 final readonly class AgentSurfacesFactory
 {
     public function __construct(
         private ExtensionConfiguration $extensionConfiguration,
         private ?AbilitiesRegistry $registry = null,
-        private ?CapabilityCatalog $catalog = null,
+        private ?AbilityCatalog $catalog = null,
     ) {}
 
     public function forSite(SiteProfile $profile): AgentSurfaces

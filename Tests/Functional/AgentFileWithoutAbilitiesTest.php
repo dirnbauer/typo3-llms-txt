@@ -25,7 +25,7 @@ final class AgentFileWithoutAbilitiesTest extends AbstractAgentFileTestCase
 
         self::assertStringNotContainsString('Abilities registry', $body);
         self::assertStringNotContainsString('abilities:list', $body);
-        self::assertStringNotContainsString('Capability catalogue', $body);
+        self::assertStringNotContainsString('Ability catalogue', $body);
         self::assertStringNotContainsString('**MCP server**', $body);
 
         // What is installed is still advertised.

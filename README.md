@@ -16,7 +16,7 @@ Two generated files per site, served from the page tree and the site configurati
 | Surface | Detected when | Advertised as |
 |---|---|---|
 | MCP server | `hn/typo3-mcp-server` is installed | endpoint URL, `ability_<namespace>_<name>` tool naming |
-| Abilities registry | `webconsulting/typo3-abilities` 1.0/1.1 is installed | REST projection (`/abilities/v1`), capability catalogue (1.1+), CLI (`abilities:list\|describe\|run`), every MCP-exposed ability with title, risk tier and description |
+| Abilities registry | `webconsulting/typo3-abilities` 1.0–1.2 is installed | REST projection (`/abilities/v1`), ability catalogue (1.2+), CLI (`abilities:list\|describe\|run`), every MCP-exposed ability with title, risk tier and description |
 | Sitemap | EXT:seo is installed | sitemap URL |
 | Paid content | the x402 paywall is installed | the `402 Payment Required` lane |
 

@@ -56,7 +56,7 @@ final class AgentsMdBuilder
 
         if ($surfaces->mcpEndpoint !== null) {
             $lines[] = sprintf(
-                '- **MCP server**: `%s` (Model Context Protocol, OAuth-protected). Tools are permissioned per capability manifest; write operations are staged in workspaces and need review before publication. Registered abilities appear here as `ability_<namespace>_<name>` tools.',
+                '- **MCP server**: `%s` (Model Context Protocol, OAuth-protected). Tools are permissioned per the MCP capability manifest; write operations are staged in workspaces and need review before publication. Registered abilities appear here as `ability_<namespace>_<name>` tools.',
                 $surfaces->mcpEndpoint,
             );
         }
@@ -77,7 +77,7 @@ final class AgentsMdBuilder
     }
 
     /**
-     * The abilities registry and its projections: REST, the capability
+     * The abilities registry and its projections: REST, the ability
      * catalogue, the CLI, and the abilities themselves.
      *
      * @return list<string>
@@ -88,7 +88,7 @@ final class AgentsMdBuilder
             return [];
         }
 
-        $lines = ['- **Abilities registry**: typed, permissioned capabilities in one registry, projected onto every surface. Each call runs through the same pipeline — policy gate, input schema validation, scope check, permission check, execution, output schema validation — and is recorded as an execution trace.'];
+        $lines = ['- **Abilities registry**: typed, permissioned abilities in one registry, projected onto every surface. Each call runs through the same pipeline — policy gate, input schema validation, scope check, permission check, execution, output schema validation — and is recorded as an execution trace.'];
 
         if ($surfaces->abilitiesRestBase !== null) {
             $lines[] = sprintf(
@@ -99,7 +99,7 @@ final class AgentsMdBuilder
 
         if ($surfaces->abilitiesCatalog) {
             $lines[] = sprintf(
-                '  - Capability catalogue: every capability of this installation in one list — abilities, MCP tools, agent skills, REST endpoints and CLI commands, each with its input schema and annotations. %s`abilities:catalog` on the CLI, `ability_abilities_catalog` over MCP.',
+                '  - Ability catalogue: every ability of this installation in one list — abilities, MCP tools, agent skills, REST endpoints and CLI commands, each with its input schema and annotations. %s`abilities:catalog` on the CLI, `ability_abilities_catalog` over MCP.',
                 $surfaces->abilitiesRestBase !== null
                     ? sprintf('`GET %s/catalog` over REST, ', $surfaces->abilitiesRestBase)
                     : '',

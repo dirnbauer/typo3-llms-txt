@@ -54,7 +54,7 @@ machine interfaces that actually exist, detected at runtime:
         -   `webconsulting/typo3-abilities <https://github.com/dirnbauer/typo3-abilities>`__ is installed
         -   Every projection: the REST base (:file:`/abilities/v1` by
             default, read from the extension configuration), the
-            capability catalogue (abilities 1.1 and newer), the CLI
+            ability catalogue (abilities 1.2 and newer), the CLI
             commands :bash:`abilities:list`, :bash:`abilities:describe`
             and :bash:`abilities:run`, and every MCP-exposed ability with
             its title, risk tier and description.

@@ -70,7 +70,7 @@ final class AgentsMdBuilderTest extends TestCase
         self::assertStringContainsString('**Abilities registry**', $output);
         self::assertStringContainsString('https://example.org/abilities/v1/abilities', $output);
         self::assertStringContainsString('`abilities:list`', $output);
-        self::assertStringNotContainsString('Capability catalogue', $output);
+        self::assertStringNotContainsString('Ability catalogue', $output);
         self::assertStringNotContainsString('Registered abilities', $output);
     }
 
