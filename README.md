@@ -9,14 +9,14 @@
 
 Two generated files per site, served from the page tree and the site configuration. AI Overviews cut outbound clicks, browser agents operate sites directly and crawlers get metered — the answer is not to hide, but to state machine-readably what this site offers and how to work with it.
 
-**`<site base>/llms.txt`** — content discovery, following the [llms.txt convention](https://llmstxt.org): H1 site title, blockquote summary, one H2 section per visible first-level page with `[title](url): description` link lists. Pages that are hidden, timed out, `no_index` or hidden in navigation are never listed.
+**`<site base>/llms.txt`** — content discovery, following the [llms.txt convention](https://llmstxt.org): H1 site title, blockquote summary, one H2 section per visible first-level page with `[title](url): description` link lists. Pages that are hidden, timed out, `no_index` or hidden in navigation are never listed. URLs come from the site's own page router, so they match what the site serves.
 
 **`<site base>/agents.md`** — an operation guide, built from the machine interfaces this installation actually has:
 
 | Surface | Detected when | Advertised as |
 |---|---|---|
 | MCP server | `hn/typo3-mcp-server` is installed | endpoint URL, `ability_<namespace>_<name>` tool naming |
-| Abilities registry | `webconsulting/typo3-abilities` is installed | REST projection (`/abilities/v1`), CLI (`abilities:list\|describe\|run`), every MCP-exposed ability with title, risk tier and description |
+| Abilities registry | `webconsulting/typo3-abilities` 1.0/1.1 is installed | REST projection (`/abilities/v1`), capability catalogue (1.1+), CLI (`abilities:list\|describe\|run`), every MCP-exposed ability with title, risk tier and description |
 | Sitemap | EXT:seo is installed | sitemap URL |
 | Paid content | the x402 paywall is installed | the `402 Payment Required` lane |
 
@@ -39,12 +39,13 @@ Nothing else: every site starts serving both files immediately.
 
 ## Configure
 
-Opt a site out in its settings:
+Two site settings, both optional:
 
 ```yaml
 # config/sites/<identifier>/settings.yaml
 llmsTxt:
-  enabled: false
+  enabled: false      # opt the site out entirely (default: true)
+  doktypes: [1, 137]  # page types to publish (default: [1], standard pages)
 ```
 
 The content sources are fixed, so editors steer the output by maintaining the page tree:
@@ -53,8 +54,8 @@ The content sources are fixed, so editors steer the output by maintaining the pa
 |---|---|
 | Site title | `websiteTitle` from the site configuration, falling back to the root page title |
 | Summary blockquote | Root page `description` |
-| Sections | Visible first-level standard pages (doktype 1) |
-| Links | The section page itself plus its visible children (`seo_title` ?: `title`, `description`, slug-based URL), capped at 25 per section |
+| Sections | Visible first-level pages of a published doktype |
+| Links | The section page itself plus its visible children (`seo_title` ?: `title`, `description`, router-generated URL), capped at 25 per section |
 
 ## Use
 
