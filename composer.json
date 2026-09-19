@@ -32,7 +32,7 @@
         "saschaegerer/phpstan-typo3": "^3.0",
         "typo3/coding-standards": "^0.9",
         "typo3/testing-framework": "^9.5",
-        "webconsulting/typo3-abilities": "^1.0"
+        "webconsulting/typo3-abilities": "^1.0 || ^1.1"
     },
     "suggest": {
         "hn/typo3-mcp-server": "agents.md advertises the MCP endpoint and its ability_* tools when installed",
@@ -53,12 +53,14 @@
             "typo3/class-alias-loader": true,
             "typo3/cms-composer-installers": true
         },
-        "sort-packages": true
+        "bin-dir": ".Build/bin",
+        "sort-packages": true,
+        "vendor-dir": ".Build/vendor"
     },
     "extra": {
         "typo3/cms": {
             "extension-key": "llms_txt",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "web-dir": ".Build/public",
             "Package": {
                 "providesPackages": []
