@@ -8,7 +8,27 @@ Configuration
 
 The extension has no extension configuration and no TypoScript. What it
 publishes is decided by the page tree; what it publishes *for* is decided
-per site.
+per site, through two site settings.
+
+..  _configuration-site-set:
+
+Editing the settings in the backend
+===================================
+
+Add the site set :guilabel:`llms.txt and agents.md`
+(``webconsulting/llms-txt``) to the site: in :guilabel:`Sites > Setup`, or
+as a dependency in the site configuration.
+
+..  code-block:: yaml
+    :caption: config/sites/<identifier>/config.yaml
+
+    dependencies:
+      - webconsulting/llms-txt
+
+The settings editor of the site then lists both settings, labelled and
+typed, under :guilabel:`llms.txt and agents.md`. The set only describes
+the settings; a site without it serves both files all the same and reads
+the two values from its :file:`settings.yaml`.
 
 ..  _configuration-opt-out:
 
@@ -24,8 +44,9 @@ Set one site setting:
       enabled: false
 
 Both paths then fall through to normal page resolution, which usually
-means a 404. The default is ``true``, so a site that says nothing serves
-both files.
+means a 404, and pages stop sending the ``Link: …; rel="describedby"``
+header. The default is ``true``, so a site that says nothing serves both
+files.
 
 ..  _configuration-doktypes:
 
@@ -41,8 +62,13 @@ keeps its articles in a page type of its own widens the list:
     llmsTxt:
       doktypes: [1, 137]
 
-A comma-separated string works as well. Values that are not positive
-integers are ignored; an empty result falls back to the default.
+Values that are not positive integers are ignored; an empty result falls
+back to the default.
+
+A comma-separated string (``'1,137'``) works as well, but only on a site
+without the site set: the set types the setting as a list of strings,
+which is what the settings editor writes, and a value of another type is
+replaced by the default.
 
 ..  _configuration-sources:
 

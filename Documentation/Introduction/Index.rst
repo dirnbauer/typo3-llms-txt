@@ -18,9 +18,12 @@ llms.txt
 ========
 
 Served at :file:`<site base>/llms.txt`, following the
-`llms.txt convention <https://llmstxt.org>`__: an H1 with the site title,
-a blockquote summary, and one H2 section per visible first-level page,
-each holding a list of ``[title](url): description`` links.
+`llms.txt proposal v2 <https://llmstxt.org>`__: an H1 with the site
+title, a blockquote summary, a details paragraph that points agents to
+agents.md, and one H2 section per visible first-level page, each holding
+a list of ``[title](url): description`` links. Every language base gets
+its own file, and the proposal's rule — the most specific file covering a
+path applies — makes :file:`/de/llms.txt` the one for the German pages.
 
 The page tree is the single source. A page is listed only when its
 ``doktype`` is published (standard pages by default), it is visible, not
@@ -83,3 +86,11 @@ site resolution and before page resolution, because no page records exist
 for the two virtual paths, and responds with ``text/plain``, a one-hour
 cache header and ``X-Robots-Tag: noindex``. Nothing is written to disk, so
 an edited page tree is visible on the next request.
+
+The same middleware makes the file discoverable, as the proposal
+recommends: every other successful response of the site language carries
+a link header that points to the llms.txt covering it.
+
+..  code-block:: text
+
+    Link: <https://example.org/llms.txt>; rel="describedby"

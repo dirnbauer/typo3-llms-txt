@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-09-23
+
+### Added
+
+- llms.txt proposal v2 discovery: every successful frontend response of an enabled site language carries `Link: <…/llms.txt>; rel="describedby"`, pointing to the llms.txt that covers it.
+- llms.txt has a details paragraph after the summary that points agents to agents.md, in the position the proposal reserves for it (after the blockquote, before the first H2 file list).
+- Site set `webconsulting/llms-txt` ("llms.txt and agents.md") with typed definitions for `llmsTxt.enabled` (bool) and `llmsTxt.doktypes` (list), labelled in English and German, so both settings can be edited in the backend settings editor. Sites without the set keep working as before.
+- Functional tests for the `describedby` link (pages, missing pages, a switched-off site) and for a site that depends on the set.
+- `.gitattributes` keeps tests, build configuration and CI files out of the Composer dist archive.
+
+### Changed
+
+- Unit and functional tests run on PHP 8.4 and 8.5 in CI, and both versions gate the build (8.5 was allowed to fail); the functional suite runs against MariaDB on both.
+- PHPStan checks for missing `#[\Override]` attributes, which the middleware, the dump command and the test `setUp()` methods now carry; class constants are typed.
+- `symfony/console` is required as `^7.4`, the range TYPO3 14.3 itself installs; `composer.json` points `homepage` and `support` at the GitHub repository.
+- CI uses `actions/checkout@v7`.
+
 ## [1.1.1] - 2026-09-19
 
 ### Changed
@@ -56,6 +73,7 @@ First stable release.
 
 - `typo3/cms-seo` is now declared as a requirement. The page tree query reads `seo_title` and `no_index`, columns EXT:seo adds to `pages`, so the extension never worked without it.
 
+[1.2.0]: https://github.com/dirnbauer/typo3-llms-txt/releases/tag/v1.2.0
 [1.1.1]: https://github.com/dirnbauer/typo3-llms-txt/releases/tag/v1.1.1
 [1.1.0]: https://github.com/dirnbauer/typo3-llms-txt/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dirnbauer/typo3-llms-txt/releases/tag/v1.0.0

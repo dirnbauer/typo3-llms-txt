@@ -9,7 +9,7 @@
 
 Two generated files per site, served from the page tree and the site configuration. AI Overviews cut outbound clicks, browser agents operate sites directly and crawlers get metered — the answer is not to hide, but to state machine-readably what this site offers and how to work with it.
 
-**`<site base>/llms.txt`** — content discovery, following the [llms.txt convention](https://llmstxt.org): H1 site title, blockquote summary, one H2 section per visible first-level page with `[title](url): description` link lists. Pages that are hidden, timed out, `no_index` or hidden in navigation are never listed. URLs come from the site's own page router, so they match what the site serves.
+**`<site base>/llms.txt`** — content discovery, following the [llms.txt proposal v2](https://llmstxt.org): H1 site title, blockquote summary, a details paragraph pointing to agents.md, one H2 section per visible first-level page with `[title](url): description` link lists. Pages that are hidden, timed out, `no_index` or hidden in navigation are never listed. URLs come from the site's own page router, so they match what the site serves. Every language base gets its own file.
 
 **`<site base>/agents.md`** — an operation guide, built from the machine interfaces this installation actually has:
 
@@ -20,7 +20,7 @@ Two generated files per site, served from the page tree and the site configurati
 | Sitemap | EXT:seo is installed | sitemap URL |
 | Paid content | the x402 paywall is installed | the `402 Payment Required` lane |
 
-Both files are served by a PSR-15 frontend middleware — after site resolution, before page resolution, because the two paths are virtual — as `text/plain`, cached for an hour, with `X-Robots-Tag: noindex`.
+Both files are served by a PSR-15 frontend middleware — after site resolution, before page resolution, because the two paths are virtual — as `text/plain`, cached for an hour, with `X-Robots-Tag: noindex`. The same middleware makes llms.txt discoverable the way the proposal recommends: every other successful response of the site language carries `Link: <…/llms.txt>; rel="describedby"`.
 
 ## Requirements
 
@@ -44,9 +44,11 @@ Two site settings, both optional:
 ```yaml
 # config/sites/<identifier>/settings.yaml
 llmsTxt:
-  enabled: false      # opt the site out entirely (default: true)
-  doktypes: [1, 137]  # page types to publish (default: [1], standard pages)
+  enabled: false          # opt the site out entirely (default: true)
+  doktypes: ['1', '137']  # page types to publish (default: ['1'], standard pages)
 ```
+
+To edit them in the backend settings editor instead, add the site set `webconsulting/llms-txt` ("llms.txt and agents.md") to the site. The set only describes and types the two settings; a site without it behaves the same. With the set, `doktypes` must be a list — the comma-separated string form (`'1,137'`) only works without it.
 
 The content sources are fixed, so editors steer the output by maintaining the page tree:
 
@@ -74,7 +76,7 @@ Nothing is written to disk and nothing is cached beyond the HTTP response, so an
 composer install
 composer ci                   # cgl, phpstan, unit, functional
 composer ci:tests:unit
-composer ci:tests:functional  # SQLite, no database server needed
+composer ci:tests:functional  # SQLite, no database server needed; CI also runs MariaDB
 composer ci:phpstan           # level 8, no baseline
 composer ci:cgl -- --dry-run
 docker run --rm -v $PWD:/project ghcr.io/typo3-documentation/render-guides:latest --config=Documentation

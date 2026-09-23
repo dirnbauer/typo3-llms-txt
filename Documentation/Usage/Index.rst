@@ -36,6 +36,10 @@ An example llms.txt
 
     > A camp about deliberate publishing.
 
+    How agents can operate this site beyond reading it — its machine
+    interfaces and ground rules — is described in
+    [agents.md](https://example.org/agents.md).
+
     ## Program
 
     - [Program](https://example.org/program): Talks and workshops.
@@ -45,8 +49,10 @@ An example llms.txt
 
     - [Buy tickets](https://example.org/tickets)
 
-Page titles and descriptions come from editors, so they are collapsed to
-one line and the brackets that carry Markdown link syntax are escaped.
+The order is the one the llms.txt proposal prescribes: H1, blockquote,
+details without headings, then the H2 file lists. Page titles and
+descriptions come from editors, so they are collapsed to one line and the
+brackets that carry Markdown link syntax are escaped.
 
 ..  _usage-example-agents:
 

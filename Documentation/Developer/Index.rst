@@ -21,7 +21,9 @@ Six small pieces, each with one job:
 
     *   -   :php:`Middleware\LlmsTxtMiddleware`
         -   Matches the two virtual paths against the site base, honours
-            the per-site setting and returns the response. Registered in
+            the per-site setting and returns the response; adds the
+            ``Link: <…/llms.txt>; rel="describedby"`` header to every other
+            2xx response of an enabled site language. Registered in
             :file:`Configuration/RequestMiddlewares.php` after
             ``typo3/cms-frontend/site`` and before
             ``typo3/cms-frontend/base-redirect-resolver``.
@@ -103,10 +105,11 @@ Tests
     composer ci:cgl -- --dry-run
 
 The unit suite covers the two builders, the Markdown escaping and the
-path matching. The functional suite runs three scenarios against the same
-fixture site: with the abilities registry installed, without it — which is
-what proves the optional constructor arguments really are optional — and
-through the :bash:`llmstxt:dump` command.
+path matching. The functional suite runs against the same fixture site:
+with the abilities registry installed, without it — which is what proves
+the optional constructor arguments really are optional — through the
+:bash:`llmstxt:dump` command, with the site set as a dependency, and as
+rendered pages that must carry the ``describedby`` link.
 
 The functional suite defaults to :bash:`pdo_sqlite` through
 :file:`Build/phpunit/FunctionalTests.xml`. CI overrides the
