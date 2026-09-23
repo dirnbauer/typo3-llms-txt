@@ -32,6 +32,8 @@ final class AgentFileRequestTest extends AbstractAgentFileTestCase
         // The structure llmstxt.org prescribes: H1, blockquote, H2 sections
         // of "- [name](url): notes" lists — and nothing else.
         self::assertStringStartsWith("# Vienna Camp\n\n> A camp about deliberate publishing.\n", $body);
+        // The details paragraph comes before the first H2 and leads to agents.md.
+        self::assertStringContainsString("\n\nHow agents can operate this site beyond reading it — its machine interfaces and ground rules — is described in [agents.md](http://localhost/agents.md).\n\n## ", $body);
         self::assertStringContainsString('## Program', $body);
         self::assertStringContainsString('- [Program](http://localhost/program): Talks and workshops.', $body);
         self::assertStringContainsString('- [Keynotes](http://localhost/program/keynotes): The opening talks.', $body);

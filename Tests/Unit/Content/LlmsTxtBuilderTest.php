@@ -17,6 +17,7 @@ final class LlmsTxtBuilderTest extends TestCase
 
     private SiteProfile $profile;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->builder = new LlmsTxtBuilder();
@@ -44,6 +45,8 @@ final class LlmsTxtBuilderTest extends TestCase
 
                 > A demo site about camping in Vienna.
 
+                How agents can operate this site beyond reading it — its machine interfaces and ground rules — is described in [agents.md](https://example.org/camp/agents.md).
+
                 ## Offers
 
                 - [Tent pitches](https://example.org/camp/offers/tents): Pitches for tents.
@@ -61,7 +64,10 @@ final class LlmsTxtBuilderTest extends TestCase
 
         $output = $this->builder->build($profile, [new Section('Empty', [])]);
 
-        self::assertSame("# Bare\n", $output);
+        self::assertSame(
+            "# Bare\n\nHow agents can operate this site beyond reading it — its machine interfaces and ground rules — is described in [agents.md](https://example.org/agents.md).\n",
+            $output,
+        );
     }
 
     #[Test]

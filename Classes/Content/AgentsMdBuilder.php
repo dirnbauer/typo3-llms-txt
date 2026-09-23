@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webconsulting\LlmsTxt\Content;
 
+use Webconsulting\LlmsTxt\Domain\AgentFile;
 use Webconsulting\LlmsTxt\Domain\AgentSurfaces;
 use Webconsulting\LlmsTxt\Domain\SiteProfile;
 
@@ -15,7 +16,7 @@ use Webconsulting\LlmsTxt\Domain\SiteProfile;
  */
 final class AgentsMdBuilder
 {
-    private const GROUND_RULES = [
+    private const array GROUND_RULES = [
         '- Respect `robots.txt`, `noindex` markers and rate limits; identify yourself with a descriptive User-Agent.',
         '- Do not submit forms or create accounts unless a human instructed you to.',
         '- Write operations go through the authenticated interfaces above — never through the public frontend.',
@@ -26,7 +27,11 @@ final class AgentsMdBuilder
         $lines = [
             '# ' . Markdown::inline($profile->title) . ' — agent guide',
             '',
-            'This file tells AI agents how to work with this site. Content discovery: [llms.txt](' . $profile->urlFor('llms.txt') . ').',
+            sprintf(
+                'This file tells AI agents how to work with this site. Content discovery: [%s](%s).',
+                AgentFile::LlmsTxt->value,
+                $profile->urlFor(AgentFile::LlmsTxt->value),
+            ),
         ];
 
         if ($profile->description !== '') {

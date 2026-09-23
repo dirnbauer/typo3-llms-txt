@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Webconsulting\LlmsTxt\Content;
 
+use Webconsulting\LlmsTxt\Domain\AgentFile;
 use Webconsulting\LlmsTxt\Domain\Section;
 use Webconsulting\LlmsTxt\Domain\SiteProfile;
 
 /**
- * Renders llms.txt following the convention at llmstxt.org: an H1 with the
- * site title, a blockquote summary and H2 sections holding
- * "- [title](url): description" link lists.
+ * Renders llms.txt following the llms.txt proposal v2 (llmstxt.org), in its
+ * order: an H1 with the site title, a blockquote summary, a details
+ * paragraph pointing to agents.md, then H2 sections holding
+ * "- [title](url): description" file lists.
  */
 final class LlmsTxtBuilder
 {
@@ -25,6 +27,13 @@ final class LlmsTxtBuilder
             $lines[] = '';
             $lines[] = '> ' . Markdown::inline($profile->description);
         }
+
+        $lines[] = '';
+        $lines[] = sprintf(
+            'How agents can operate this site beyond reading it — its machine interfaces and ground rules — is described in [%s](%s).',
+            AgentFile::AgentsMd->value,
+            $profile->urlFor(AgentFile::AgentsMd->value),
+        );
 
         foreach ($sections as $section) {
             if ($section->links === []) {

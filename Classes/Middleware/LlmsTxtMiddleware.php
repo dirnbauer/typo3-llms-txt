@@ -20,6 +20,10 @@ use Webconsulting\LlmsTxt\Domain\AgentFile;
  * site language. Runs after site resolution and before page resolution —
  * the two paths are virtual, no page records exist for them. Disable per
  * site with the setting llmsTxt.enabled: false.
+ *
+ * Every other successful response of an enabled site language points to
+ * the llms.txt that covers it with a `Link: <…/llms.txt>; rel="describedby"`
+ * header, the discovery mechanism of the llms.txt proposal v2.
  */
 final readonly class LlmsTxtMiddleware implements MiddlewareInterface
 {
@@ -29,24 +33,46 @@ final readonly class LlmsTxtMiddleware implements MiddlewareInterface
         private StreamFactoryInterface $streamFactory,
     ) {}
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $site = $request->getAttribute('site');
         $language = $request->getAttribute('language');
-        if (!$site instanceof Site || !$language instanceof SiteLanguage) {
+        if (!$site instanceof Site || !$language instanceof SiteLanguage || !self::isEnabled($site)) {
             return $handler->handle($request);
         }
 
         $file = AgentFile::fromRequestPath($language->getBase()->getPath(), $request->getUri()->getPath());
-        if ($file === null || !self::isEnabled($site)) {
-            return $handler->handle($request);
+        if ($file !== null) {
+            return $this->serve($site, $language, $file);
         }
 
+        return self::withDescribedByLink($handler->handle($request), $language);
+    }
+
+    private function serve(Site $site, SiteLanguage $language, AgentFile $file): ResponseInterface
+    {
         return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/plain; charset=utf-8')
             ->withHeader('Cache-Control', 'public, max-age=3600')
             ->withHeader('X-Robots-Tag', 'noindex')
             ->withBody($this->streamFactory->createStream($this->renderer->render($site, $language, $file)));
+    }
+
+    /**
+     * Redirects, errors and not-modified answers describe no content, so
+     * only 2xx responses carry the link.
+     */
+    private static function withDescribedByLink(ResponseInterface $response, SiteLanguage $language): ResponseInterface
+    {
+        $status = $response->getStatusCode();
+        if ($status < 200 || $status >= 300) {
+            return $response;
+        }
+
+        $llmsTxtUrl = rtrim((string)$language->getBase(), '/') . '/' . AgentFile::LlmsTxt->value;
+
+        return $response->withAddedHeader('Link', sprintf('<%s>; rel="describedby"', $llmsTxtUrl));
     }
 
     private static function isEnabled(Site $site): bool
