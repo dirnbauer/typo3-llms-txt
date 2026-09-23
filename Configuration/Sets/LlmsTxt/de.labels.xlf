@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="de" datatype="plaintext" original="EXT:llms_txt/Configuration/Sets/LlmsTxt/labels.xlf" date="2026-09-23T00:00:00Z" product-name="llms_txt">
+    <header/>
+    <body>
+      <trans-unit id="label">
+        <source>llms.txt and agents.md</source>
+        <target>llms.txt und agents.md</target>
+      </trans-unit>
+      <trans-unit id="categories.llmsTxt">
+        <source>llms.txt and agents.md</source>
+        <target>llms.txt und agents.md</target>
+      </trans-unit>
+      <trans-unit id="settings.llmsTxt.enabled">
+        <source>Serve llms.txt and agents.md</source>
+        <target>llms.txt und agents.md ausliefern</target>
+      </trans-unit>
+      <trans-unit id="settings.description.llmsTxt.enabled">
+        <source>Off: both paths fall through to normal page resolution, and pages no longer point to llms.txt.</source>
+        <target>Aus: Beide Pfade laufen in die normale Seitenauflösung, und Seiten verweisen nicht mehr auf die llms.txt.</target>
+      </trans-unit>
+      <trans-unit id="settings.llmsTxt.doktypes">
+        <source>Published page types</source>
+        <target>Veröffentlichte Seitentypen</target>
+      </trans-unit>
+      <trans-unit id="settings.description.llmsTxt.doktypes">
+        <source>The doktype values llms.txt lists, for example 1 (standard page) and 137 for a page type of your own.</source>
+        <target>Die doktype-Werte, die llms.txt auflistet, zum Beispiel 1 (Standardseite) und 137 für einen eigenen Seitentyp.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

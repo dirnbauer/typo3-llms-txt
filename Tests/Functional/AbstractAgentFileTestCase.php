@@ -24,6 +24,7 @@ abstract class AbstractAgentFileTestCase extends FunctionalTestCase
         'webconsulting/typo3-llms-txt',
     ];
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,8 +35,9 @@ abstract class AbstractAgentFileTestCase extends FunctionalTestCase
 
     /**
      * @param array<string, mixed> $settings Site settings, e.g. ['llmsTxt' => ['enabled' => false]]
+     * @param list<string> $dependencies Site sets the site depends on
      */
-    protected function writeCampSite(array $settings = []): void
+    protected function writeCampSite(array $settings = [], array $dependencies = []): void
     {
         $configuration = [
             'rootPageId' => 1,
@@ -55,6 +57,9 @@ abstract class AbstractAgentFileTestCase extends FunctionalTestCase
         ];
         if ($settings !== []) {
             $configuration['settings'] = $settings;
+        }
+        if ($dependencies !== []) {
+            $configuration['dependencies'] = $dependencies;
         }
 
         $path = Environment::getConfigPath() . '/sites/camp';

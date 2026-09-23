@@ -1,0 +1,13 @@
+# Labels and descriptions come from labels.xlf (German: de.labels.xlf).
+categories:
+  llmsTxt: ~
+
+settings:
+  llmsTxt.enabled:
+    type: bool
+    default: true
+    category: llmsTxt
+  llmsTxt.doktypes:
+    type: stringlist
+    default: ['1']
+    category: llmsTxt
