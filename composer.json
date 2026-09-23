@@ -11,6 +11,7 @@
         "agents",
         "aeo"
     ],
+    "homepage": "https://github.com/dirnbauer/typo3-llms-txt",
     "authors": [
         {
             "name": "Kurt Dirnbauer",
@@ -18,9 +19,14 @@
             "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/dirnbauer/typo3-llms-txt/issues",
+        "source": "https://github.com/dirnbauer/typo3-llms-txt",
+        "docs": "https://github.com/dirnbauer/typo3-llms-txt/tree/main/Documentation"
+    },
     "require": {
         "php": "^8.4",
-        "symfony/console": "^7.0",
+        "symfony/console": "^7.4",
         "typo3/cms-core": "^14.3.7",
         "typo3/cms-frontend": "^14.3.7",
         "typo3/cms-seo": "^14.3.7"
@@ -60,7 +66,7 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "llms_txt",
-            "version": "1.1.1",
+            "version": "1.2.0",
             "web-dir": ".Build/public",
             "Package": {
                 "providesPackages": []
