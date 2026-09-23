@@ -32,6 +32,7 @@ final class DumpCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -40,6 +41,7 @@ final class DumpCommand extends Command
             ->addOption('language', 'l', InputOption::VALUE_REQUIRED, 'Language id of the site language to render', '0');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $file = AgentFile::tryFrom(self::string($input->getArgument('file')));

@@ -23,8 +23,8 @@ use Webconsulting\LlmsTxt\Domain\SiteProfile;
  */
 final readonly class SiteReader
 {
-    private const MAX_LINKS_PER_SECTION = 25;
-    private const DEFAULT_DOKTYPES = [PageRepository::DOKTYPE_DEFAULT];
+    private const int MAX_LINKS_PER_SECTION = 25;
+    private const array DEFAULT_DOKTYPES = [PageRepository::DOKTYPE_DEFAULT];
 
     public function __construct(
         private Context $context,

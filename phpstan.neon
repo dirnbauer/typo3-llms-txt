@@ -5,8 +5,10 @@ includes:
 
 parameters:
     level: 8
+    phpVersion: 80400
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: true
+    checkMissingOverrideMethodAttribute: true
     paths:
         - Classes
         - Configuration

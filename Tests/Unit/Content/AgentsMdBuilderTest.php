@@ -17,6 +17,7 @@ final class AgentsMdBuilderTest extends TestCase
 
     private SiteProfile $profile;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->builder = new AgentsMdBuilder();

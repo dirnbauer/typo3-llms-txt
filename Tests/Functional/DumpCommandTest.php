@@ -19,6 +19,7 @@ final class DumpCommandTest extends AbstractAgentFileTestCase
 {
     private CommandTester $tester;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
